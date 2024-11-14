@@ -17,7 +17,6 @@
             justify-content: center;
             text-align: center;
             overflow: hidden;
-            animation: backgroundAnim 3s ease-in-out infinite alternate;
         }
         h1 {
             font-size: 4em;
@@ -31,15 +30,6 @@
             margin-top: 20px;
             animation: fadeInOut 2s ease-in-out infinite alternate;
         }
-        .scroll-text {
-            font-size: 1.2em;
-            color: #ffffff;
-            white-space: nowrap;
-            overflow: hidden;
-            position: absolute;
-            bottom: 0;
-            animation: scrollText 10s linear infinite;
-        }
         .main-image {
             width: 80%;
             max-width: 400px;
@@ -50,19 +40,14 @@
         }
         .bouncing-image {
             position: absolute;
-            width: 100px;
-            height: 100px;
+            width: 80px;
+            height: 80px;
             border-radius: 50%;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            animation: bounce 3s ease-in-out infinite;
         }
         @keyframes shake {
             0%, 100% { transform: translate(1px, 1px) rotate(0deg); }
-            10%, 90% { transform: translate(-1px, -2px) rotate(-2deg); }
-            20%, 80% { transform: translate(-3px, 0px) rotate(2deg); }
-            30%, 70% { transform: translate(3px, 2px) rotate(0deg); }
-            40%, 60% { transform: translate(1px, -1px) rotate(2deg); }
-            50% { transform: translate(-1px, 2px) rotate(-2deg); }
+            50% { transform: translate(-1px, -2px) rotate(-2deg); }
         }
         @keyframes spin {
             from { transform: rotate(0deg); }
@@ -70,23 +55,7 @@
         }
         @keyframes fadeInOut {
             0% { opacity: 0; }
-            50% { opacity: 1; }
-            100% { opacity: 0; }
-        }
-        @keyframes scrollText {
-            0% { transform: translateX(100%); }
-            100% { transform: translateX(-100%); }
-        }
-        @keyframes backgroundAnim {
-            0% { background: linear-gradient(45deg, #ff6347, #ff4500); }
-            50% { background: linear-gradient(45deg, #ff4500, #ff6347); }
-            100% { background: linear-gradient(45deg, #ff6347, #ff4500); }
-        }
-        @keyframes bounce {
-            0%, 100% { transform: translate(0, 0); }
-            25% { transform: translate(90vw, 10vh); }
-            50% { transform: translate(0, 90vh); }
-            75% { transform: translate(-90vw, -10vh); }
+            100% { opacity: 1; }
         }
     </style>
 </head>
@@ -97,13 +66,9 @@
 
 <img src="https://imagenes.heraldo.es/files/image_990_556/uploads/imagenes/2024/07/25/por-que-espana-es-el-pais-con-mas-calvos-gsc1.jpeg" alt="Imagen divertida" class="main-image">
 
-<div class="scroll-text">
-    Never gonna give you up, Never gonna let you down, Never gonna turn around and desert you... (repeat as needed)
-</div>
-
-<img src="https://imagenes.heraldo.es/files/image_990_556/uploads/imagenes/2024/07/25/por-que-espana-es-el-pais-con-mas-calvos-gsc1.jpeg" alt="Imagen divertida" class="bouncing-image" style="animation-delay: 0s;">
-<img src="https://imagenes.heraldo.es/files/image_990_556/uploads/imagenes/2024/07/25/por-que-espana-es-el-pais-con-mas-calvos-gsc1.jpeg" alt="Imagen divertida" class="bouncing-image" style="animation-delay: 1s;">
-<img src="https://imagenes.heraldo.es/files/image_990_556/uploads/imagenes/2024/07/25/por-que-espana-es-el-pais-con-mas-calvos-gsc1.jpeg" alt="Imagen divertida" class="bouncing-image" style="animation-delay: 2s;">
+<img src="https://imagenes.heraldo.es/files/image_990_556/uploads/imagenes/2024/07/25/por-que-espana-es-el-pais-con-mas-calvos-gsc1.jpeg" alt="Imagen divertida" class="bouncing-image" id="bounce1">
+<img src="https://imagenes.heraldo.es/files/image_990_556/uploads/imagenes/2024/07/25/por-que-espana-es-el-pais-con-mas-calvos-gsc1.jpeg" alt="Imagen divertida" class="bouncing-image" id="bounce2">
+<img src="https://imagenes.heraldo.es/files/image_990_556/uploads/imagenes/2024/07/25/por-que-espana-es-el-pais-con-mas-calvos-gsc1.jpeg" alt="Imagen divertida" class="bouncing-image" id="bounce3">
 
 <audio id="audio" autoplay loop>
     <source src="https://www.myinstants.com/media/sounds/calvoooooooooooooooooooooooooooo.mp3" type="audio/mpeg">
@@ -115,7 +80,37 @@
     audio.volume = 1.0;
     audio.play();
 
-    
+    // Initialize positions and movement directions
+    const bouncingImages = [
+        { element: document.getElementById('bounce1'), x: 50, y: 50, dx: 2, dy: 2 },
+        { element: document.getElementById('bounce2'), x: 100, y: 100, dx: 3, dy: 3 },
+        { element: document.getElementById('bounce3'), x: 200, y: 150, dx: 4, dy: 4 }
+    ];
+
+    function updatePositions() {
+        bouncingImages.forEach(img => {
+            // Move the image
+            img.x += img.dx;
+            img.y += img.dy;
+
+            // Bounce off the edges
+            if (img.x <= 0 || img.x + img.element.offsetWidth >= window.innerWidth) {
+                img.dx *= -1;
+            }
+            if (img.y <= 0 || img.y + img.element.offsetHeight >= window.innerHeight) {
+                img.dy *= -1;
+            }
+
+            // Update position
+            img.element.style.left = img.x + 'px';
+            img.element.style.top = img.y + 'px';
+        });
+
+        requestAnimationFrame(updatePositions);
+    }
+
+    // Start the animation
+    updatePositions();
 </script>
 
 </body>
