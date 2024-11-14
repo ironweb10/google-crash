@@ -12,98 +12,86 @@
             color: #ffffff;
             font-family: Arial, sans-serif;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             text-align: center;
             overflow: hidden;
+            animation: backgroundAnim 3s ease-in-out infinite alternate;
         }
         h1 {
-            font-size: 3em;
+            font-size: 4em;
             color: #ffeb3b;
-            text-shadow: 2px 2px #000;
-            animation: shake 0.3s infinite;
+            text-shadow: 4px 4px #000;
+            animation: shake 0.1s infinite alternate;
         }
         p {
             font-size: 1.5em;
             color: #ffffff;
             margin-top: 20px;
-            animation: fadeIn 2s ease-in-out infinite alternate;
+            animation: fadeInOut 2s ease-in-out infinite alternate;
+        }
+        .scroll-text {
+            font-size: 1.2em;
+            color: #ffffff;
+            white-space: nowrap;
+            overflow: hidden;
+            position: absolute;
+            bottom: 0;
+            animation: scrollText 10s linear infinite;
         }
         img {
             width: 80%;
             max-width: 400px;
             border-radius: 50%;
             margin-top: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            animation: spin 4s linear infinite;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            animation: spin 2s linear infinite;
         }
         @keyframes shake {
             0% { transform: translate(1px, 1px) rotate(0deg); }
-            10% { transform: translate(-1px, -2px) rotate(-1deg); }
-            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            10% { transform: translate(-1px, -2px) rotate(-2deg); }
+            20% { transform: translate(-3px, 0px) rotate(2deg); }
             30% { transform: translate(3px, 2px) rotate(0deg); }
-            40% { transform: translate(1px, -1px) rotate(1deg); }
-            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            40% { transform: translate(1px, -1px) rotate(2deg); }
+            50% { transform: translate(-1px, 2px) rotate(-2deg); }
             60% { transform: translate(-3px, 1px) rotate(0deg); }
-            70% { transform: translate(3px, 1px) rotate(-1deg); }
-            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            70% { transform: translate(3px, 1px) rotate(-2deg); }
+            80% { transform: translate(-1px, -1px) rotate(2deg); }
             90% { transform: translate(1px, 2px) rotate(0deg); }
-            100% { transform: translate(1px, -2px) rotate(-1deg); }
+            100% { transform: translate(1px, -2px) rotate(-2deg); }
         }
         @keyframes spin {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
         }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        @keyframes fadeInOut {
+            0% { opacity: 0; }
+            50% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+        @keyframes scrollText {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        @keyframes backgroundAnim {
+            0% { background: linear-gradient(45deg, #ff6347, #ff4500); }
+            50% { background: linear-gradient(45deg, #ff4500, #ff6347); }
+            100% { background: linear-gradient(45deg, #ff6347, #ff4500); }
         }
     </style>
 </head>
 <body>
 
 <h1>Hola, Don Limpio</h1>
-<p>¡🧑‍🦲🧑‍🦲🧑‍🦲🧑‍🦲🧑‍🦲🧑‍🦲🧑‍🦲🧑‍🦲🧑‍🦲🧑‍🦲🧑‍🦲🧑‍🦲🧑‍🦲🧑‍🦲🧑‍🦲🧑‍🦲!</p>
-    
+<p>¡🧑‍🦲🧑‍🦲🧑‍🦲🧑‍🦲🧑‍🦲🧑‍🦲🧑‍🦲🧑‍🦲🧑‍🦲🧑‍🦲🧑‍🦲🧑‍🦲🧑‍🦲🧑‍🦲🧑‍🦲!</p>
 <img src="https://imagenes.heraldo.es/files/image_990_556/uploads/imagenes/2024/07/25/por-que-espana-es-el-pais-con-mas-calvos-gsc1.jpeg" alt="Imagen divertida">
 <p>¡You have been RICK ROLLED!</p>
-    <p>
-Never gonna give you up
-Never gonna let you down
-Never gonna turn around and desert you
-Never gonna make you cry
-Never gonna say goodbye
-Never gonna tell a lie and hurt you
-Never gonna give you up
-Never gonna let you down
-Never gonna turn around and desert you
-Never gonna make you cry
-Never gonna say goodbye
-Never gonna tell a lie and hurt you
-Never gonna give you up
-Never gonna let you down
-Never gonna turn around and desert you
-Never gonna make you cry
-Never gonna say goodbye
-Never gonna tell a lie and hurt you
-Never gonna give you up
-Never gonna let you down
-Never gonna turn around and desert you
-Never gonna make you cry
-Never gonna say goodbye
-Never gonna tell a lie and hurt you
-Never gonna give you up
-Never gonna let you down
-Never gonna turn around and desert you
-Never gonna make you cry
-Never gonna say goodbye
-Never gonna tell a lie and hurt you
-Never gonna give you up
-Never gonna let you down
-Never gonna turn around and desert you
-Never gonna make you cry
-Never gonna say goodbye
-Never gonna tell a lie and hurt you</p>
+
+<div class="scroll-text">
+    Never gonna give you up, Never gonna let you down, Never gonna turn around and desert you... (repeat as needed)
+</div>
+
 <audio id="audio" autoplay loop>
     <source src="https://www.myinstants.com/media/sounds/calvoooooooooooooooooooooooooooo.mp3" type="audio/mpeg">
     Tu navegador no soporta la reproducción de audio.
@@ -111,13 +99,12 @@ Never gonna tell a lie and hurt you</p>
 
 <script>
     const audio = document.getElementById('audio');
+    audio.volume = 1.0;
     audio.play();
-    onbeforeunload = function(){ localStorage.x = 1; };
 
-    setTimeout(function(){
-        while(1) location.reload(1);
-    }, 1000);
+    
 </script>
 
 </body>
 </html>
+
