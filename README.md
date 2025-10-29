@@ -1,1 +1,1 @@
-Browser craser to troll people
+A website that crash the browser to troll people
